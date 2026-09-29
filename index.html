@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#030712" />
+  <title>Pulse Pong · NeuroVerse</title>
+  <link rel="stylesheet" href="./styles.css?v=20260929-smooth1" />
+</head>
+<body>
+  <main id="app">
+    <video id="camera" autoplay muted playsinline aria-hidden="true"></video>
+    <div class="camera-wash" aria-hidden="true"></div>
+    <canvas id="gameCanvas" aria-label="Pulse Pong arena"></canvas>
+
+    <section id="hud" class="hud hidden" aria-live="polite">
+      <div class="topbar">
+        <div class="brand-lockup">
+          <span>NeuroVerse arcade</span>
+          <strong>Pulse Pong</strong>
+        </div>
+        <div class="scoreboard" aria-label="Score">
+          <div><span>You</span><strong id="playerScore">0</strong></div>
+          <div class="score-divider">:</div>
+          <div><span>AI</span><strong id="aiScore">0</strong></div>
+        </div>
+        <div class="top-actions">
+          <div class="timer"><strong id="timerValue">40.0</strong><span>sec</span></div>
+          <button id="soundButton" class="icon-button" type="button" aria-label="Mute sound" aria-pressed="false">♪</button>
+          <button id="fullscreenButton" class="icon-button" type="button" aria-label="Enter fullscreen" aria-pressed="false" title="Fullscreen" data-neuroverse-fullscreen data-fullscreen-target="document">⛶</button>
+        </div>
+      </div>
+
+      <div id="effectTray" class="effect-tray" aria-label="Active power-ups"></div>
+      <div id="trackingPill" class="tracking-pill"><span></span><b id="trackingText">Show one open palm</b></div>
+    </section>
+
+    <button id="setupFullscreenButton" class="icon-button setup-fullscreen" type="button" aria-label="Enter fullscreen" aria-pressed="false" title="Fullscreen" data-neuroverse-fullscreen data-fullscreen-target="document">⛶</button>
+
+    <section id="setupOverlay" class="overlay setup-overlay">
+      <div class="setup-card">
+        <div class="setup-copy">
+          <p class="kicker">NeuroVerse hand-powered arcade</p>
+          <h1>Pulse <span>Pong</span></h1>
+          <p class="lead">Your palm is the paddle. Defend your goal, cook the AI, and grab every glowing power-up.</p>
+          <div class="instructions">
+            <div><span>01</span><p><strong>Raise one palm</strong>Move it around your half of the arena.</p></div>
+            <div><span>02</span><p><strong>Smash the puck</strong>Send it through the AI goal at the top.</p></div>
+            <div><span>03</span><p><strong>Chase the chaos</strong>Touch glowing power-ups before they disappear.</p></div>
+          </div>
+          <div class="setup-actions">
+            <button id="startButton" class="primary" type="button" disabled>Preparing camera…</button>
+            <button id="mouseButton" class="secondary" type="button">Use mouse / touch</button>
+          </div>
+          <p id="cameraStatus" class="camera-status">Camera tracking stays on this device.</p>
+        </div>
+
+        <div class="power-deck" aria-label="Possible power-ups">
+          <div class="arena-preview" aria-hidden="true">
+            <div class="preview-goal top"></div>
+            <div class="preview-line"></div>
+            <div class="preview-paddle ai"></div>
+            <div class="preview-puck"></div>
+            <div class="preview-paddle player"></div>
+            <div class="preview-goal bottom"></div>
+          </div>
+          <p class="deck-label">Chaos deck loaded</p>
+          <div class="power-list">
+            <div><i style="--accent:#67e8f9">◎</i><span><strong>Giant Hand</strong>Bigger paddle</span></div>
+            <div><i style="--accent:#c8ff62">✦</i><span><strong>Multiball</strong>Two pucks. Good luck.</span></div>
+            <div><i style="--accent:#a5f3fc">❄</i><span><strong>Freeze</strong>AI takes a nap</span></div>
+            <div><i style="--accent:#fb7185">⚡</i><span><strong>Speed Glitch</strong>Physics leaves the chat</span></div>
+            <div><i style="--accent:#c084fc">↺</i><span><strong>Reverse</strong>Your hand betrays you</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="countdown" class="countdown hidden" aria-live="assertive">
+      <p>Palm online</p>
+      <strong id="countdownValue">3</strong>
+    </section>
+
+    <div id="momentBanner" class="moment-banner hidden" aria-live="assertive">
+      <small id="momentKicker">Power-up</small>
+      <strong id="momentTitle">GIANT HAND</strong>
+      <span id="momentSubtitle">The AI would like to file a complaint.</span>
+    </div>
+
+    <section id="resultOverlay" class="overlay hidden" aria-live="polite">
+      <div class="result-card">
+        <p class="kicker">Final whistle</p>
+        <h2 id="resultTitle">YOU COOKED THE AI</h2>
+        <p id="resultSubtitle">That defence needs a software update.</p>
+        <div class="final-score"><span id="finalPlayerScore">0</span><b>—</b><span id="finalAiScore">0</span></div>
+        <div class="result-stats">
+          <div><strong id="powerUpsStat">0</strong><span>power-ups</span></div>
+          <div><strong id="rallyStat">0</strong><span>best rally</span></div>
+          <div><strong id="bestScoreStat">0</strong><span>best goals</span></div>
+        </div>
+        <div class="result-actions">
+          <button id="playAgainButton" class="secondary" type="button">Run it back</button>
+          <button id="menuButton" class="primary" type="button">Back to menu</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="errorOverlay" class="overlay hidden" role="alert">
+      <div class="error-card">
+        <p class="kicker">Camera signal lost</p>
+        <h2>No stress.</h2>
+        <p id="errorText">Allow camera access, or play with mouse / touch instead.</p>
+        <div class="result-actions">
+          <button id="retryButton" class="secondary" type="button">Try camera again</button>
+          <button id="errorMouseButton" class="primary" type="button">Use mouse / touch</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="pauseCard" class="pause-card hidden">Round paused<small>Come back when you are ready.</small></div>
+  </main>
+
+  <script src="./neuroverse-fullscreen.js"></script>
+  <script type="module" src="./game.js?v=20260929-smooth1"></script>
+</body>
+</html>
