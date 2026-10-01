@@ -19,16 +19,3 @@ Then open `http://localhost:8000` in Chrome or Edge.
 ```powershell
 npm test
 ```
-
-## Hosting
-
-This is a provider-neutral static website. Push the complete folder to a
-GitHub repository first, then connect that repository to whichever hosting
-provider you choose later.
-
-It does not require a build command or output directory. The deployed website
-must use HTTPS so the browser can request camera access. Both Vercel and
-Netlify provide HTTPS for deployed sites.
-
-The hand landmarks, photos, and video frames stay in the visitor's browser and
-are not uploaded or stored by this project.
